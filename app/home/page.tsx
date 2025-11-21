@@ -80,7 +80,7 @@ export default function HomePage() {
           <img src="../busqueda.png" alt="buscar" />
         </Link>
 
-        <Link href="/profile" className="nav-icon">
+        <Link href="/perfil" className="nav-icon">
           <img src="../usuario.png" alt="perfil" />
         </Link>
       </nav>

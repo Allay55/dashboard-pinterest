@@ -103,12 +103,11 @@ export default function UploadImagePage() {
         <div className="upload-columns-wide">
           <div className="upload-file-area">
             <input
-              type="file"
-              accept="image/*"
-              capture="environment" // 👈 permite usar cámara en móviles
-              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-              className="upload-input-file"
-            />
+  type="file"
+  accept="image/*"
+  onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+  className="upload-input-file"
+/>
           </div>
 
           <div className="upload-description-area">

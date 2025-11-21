@@ -133,7 +133,7 @@ export default function UploadImagePage() {
       <nav className="navbar-inferior">
         <Link href="/home" className="nav-icon"><img src="../hogar.png" alt="Inicio" /></Link>
         <Link href="/images" className="nav-cruz">+</Link>
-        <Link href="/search" className="nav-icon"><img src="../busqueda.png" alt="Buscar" /></Link>
+        <Link href="/crudFoto" className="nav-icon"><img src="../busqueda.png" alt="Buscar" /></Link>
         <Link href="/perfil" className="nav-icon"><img src="../usuario.png" alt="Perfil" /></Link>
       </nav>
     </div>

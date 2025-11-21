@@ -16,6 +16,7 @@ export default function HomePage() {
   const loadPhotos = async () => {
     setLoading(true);
 
+    // Obtener usuario logueado
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -25,13 +26,14 @@ export default function HomePage() {
       return;
     }
 
+    // 🔥 OBTENER TODAS LAS FOTOS DE TODOS LOS USUARIOS
     const { data, error } = await supabase
       .from("fotos")
-      .select("id, url")
-      .eq("usuario_id", user.id)
+      .select("id, url, descripcion, usuario_id, creado_en")
       .order("creado_en", { ascending: false });
 
     if (!error && data) setPhotos(data);
+
     setLoading(false);
   };
 
@@ -52,7 +54,7 @@ export default function HomePage() {
         </div>
       ) : photos.length === 0 ? (
         <div className="mensaje-wrapper">
-          <p className="mensaje-carga">Aún no has subido fotos.</p>
+          <p className="mensaje-carga">No hay fotos disponibles.</p>
         </div>
       ) : (
         <div className="pinterest-grid">
@@ -64,15 +66,23 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Navbar inferior estilo Pinterest */}
+      {/* Navbar inferior */}
       <nav className="navbar-inferior">
-        <Link href="/home" className="nav-icon"><img src="../hogar.png" alt="" /></Link>
+        <Link href="/home" className="nav-icon">
+          <img src="../hogar.png" alt="home" />
+        </Link>
 
-        <Link href="/images" className="nav-cruz">+</Link>
+        <Link href="/images" className="nav-cruz">
+          +
+        </Link>
 
-        <Link href="/search" className="nav-icon"><img src="../busqueda.png" alt="" /></Link>
+        <Link href="/crudFoto" className="nav-icon">
+          <img src="../busqueda.png" alt="buscar" />
+        </Link>
 
-        <Link href="/perfil" className="nav-icon"><img src="../usuario.png" alt="" /></Link>
+        <Link href="/profile" className="nav-icon">
+          <img src="../usuario.png" alt="perfil" />
+        </Link>
       </nav>
     </div>
   );

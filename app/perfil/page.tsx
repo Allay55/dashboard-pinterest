@@ -147,7 +147,7 @@ export default function UsuarioPage() {
 
         <Link href="/images" className="nav-cruz">+</Link>
 
-        <Link href="/search" className="nav-icon">
+        <Link href="/crudFoto" className="nav-icon">
           <img src="../busqueda.png" alt="Buscar" />
         </Link>
 

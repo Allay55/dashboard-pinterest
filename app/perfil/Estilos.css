@@ -1,0 +1,164 @@
+/* Contenedor principal */
+.perfil-container {
+  max-width: 420px;
+  margin: 100px auto 80px; /* espacio para navbar y menú fijo si los usas */
+  padding: 24px;
+  background-color: white;
+  border-radius: 20px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  color: #333;
+}
+
+/* Título */
+.perfil-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #e63946;
+}
+
+/* Inputs */
+.perfil-input {
+  border: 1px solid #ccc;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 1rem;
+  width: 100%;
+  transition: border-color 0.2s ease;
+}
+
+.perfil-input:focus {
+  border-color: #e63946;
+  outline: none;
+}
+
+/* Input solo lectura */
+.perfil-input.readonly {
+  background-color: #f5f5f5;
+  color: #777;
+}
+
+/* Botón guardar */
+.perfil-button {
+  background-color: #e63946;
+  color: white;
+  padding: 14px;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.perfil-button:hover {
+  background-color: #ff5c5c;
+  transform: scale(1.02);
+}
+
+/* Mensaje */
+.perfil-message {
+  text-align: center;
+  margin-top: 1rem;
+  font-weight: 600;
+  color: #e63946;
+}
+
+/* Botón cerrar sesión */
+.perfil-logout {
+  background-color: #999;
+  color: white;
+  padding: 12px;
+  font-size: 0.95rem;
+  border-radius: 12px;
+  margin-top: 1rem;
+  width: 100%;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.perfil-logout:hover {
+  background-color: #777;
+}
+
+/* Avatar */
+.perfil-avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  margin-bottom: 1rem;
+}
+
+.perfil-avatar-placeholder {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background-color: #eee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #aaa;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+/* Navbar inferior fijo */
+nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background-color: #000000; /* fondo rojo */
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+}
+
+/* Íconos del navbar */
+.nav-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.nav-icon img {
+  width: 20px;
+  height: 20px;
+  filter: brightness(0) invert(1); /* convierte el icono en blanco */
+}
+
+.nav-icon:hover {
+  background-color: #ffffff3b;
+}
+
+/* Botón central flotante (la cruz) */
+.nav-cruz {
+  position: relative;
+  top: -4px;
+  background-color: white;
+  color: #e63946;
+  font-size: 1.5rem;
+  font-weight: bold;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  z-index: 101;
+}
+
+.nav-cruz:hover {
+  transform: scale(1.1);
+  background-color: #ffe5e5;
+}

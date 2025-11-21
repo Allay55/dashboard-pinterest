@@ -1,7 +1,7 @@
 /* Fondo general estilo Pinterest */
 body {
   font-family: 'Helvetica Neue', Arial, sans-serif;
-  background-color: #ffffff;
+  background-color: #000000;
   margin: 0;
   padding: 0;
 }
@@ -65,4 +65,21 @@ body {
   margin-top: 15px;
   font-size: 14px;
   color: #333;
+}
+.login-register-link {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  color:#c2001b;
+}
+
+.login-register-anchor {
+  color: #c2001b;
+  font-weight: bold;
+  text-decoration: underline;
+  transition: color 0.2s ease;
+}
+
+.login-register-anchor:hover {
+  color: #000;
 }

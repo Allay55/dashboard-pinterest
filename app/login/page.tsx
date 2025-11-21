@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";   // 👈 Importa el router
 import { supabase } from "@/lib/supabaseClient";
-import "./Estilos.css"; 
+import Link from "next/link";
+import "./Estilos.css";
 
 export default function LoginPage() {
   const [email, setEmail] = useState<string>("");
@@ -73,6 +74,13 @@ export default function LoginPage() {
       </form>
 
       {message && <p className="login-message">{message}</p>}
+      {/* Link para registrarse */}
+      <p className="login-register-link">
+        ¿No tienes cuenta?{" "}
+        <Link href="/register" className="login-register-anchor">
+          Regístrate aquí
+        </Link>
+      </p>
     </div>
   );
 }

@@ -72,7 +72,7 @@ export default function HomePage() {
 
         <Link href="/search" className="nav-icon"><img src="../busqueda.png" alt="" /></Link>
 
-        <Link href="/profile" className="nav-icon"><img src="../usuario.png" alt="" /></Link>
+        <Link href="/perfil" className="nav-icon"><img src="../usuario.png" alt="" /></Link>
       </nav>
     </div>
   );

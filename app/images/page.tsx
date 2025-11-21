@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
 import "./Estilos.css";
@@ -9,8 +9,8 @@ export default function UploadImagePage() {
   const [file, setFile] = useState<File | null>(null);
   const [descripcion, setDescripcion] = useState("");
   const [message, setMessage] = useState("");
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  // Verifica que el usuario exista en la tabla "usuarios"
   const ensureUserExists = async (userId: string, email: string) => {
     const { data } = await supabase
       .from("usuarios")
@@ -36,7 +36,6 @@ export default function UploadImagePage() {
     return true;
   };
 
-  // Maneja la subida de la imagen
   const handleUpload = async () => {
     if (!file) {
       setMessage("Selecciona una imagen primero.");
@@ -59,36 +58,31 @@ export default function UploadImagePage() {
       return;
     }
 
-    const fileExt = file.name.split(".").pop() ?? "png";
+    const fileExt = file.name.split('.').pop() ?? 'png';
     const fileName = `${user.id}_${Date.now()}.${fileExt}`;
 
     try {
-      // Asegurar content-type correcto (opcional, supabase suele detectarlo)
-      const contentType = file.type || `image/${fileExt}`;
-
       const { error: uploadError } = await supabase.storage
-        .from("imagenes")
-        .upload(fileName, file, { upsert: true, contentType });
+        .from('imagenes')
+        .upload(fileName, file, { upsert: true });
 
       if (uploadError) {
         console.log(uploadError);
-        setMessage("Error al subir imagen: " + uploadError.message);
+        setMessage('Error al subir imagen: ' + uploadError.message);
         return;
       }
 
-      const { data: urlData } = await supabase.storage
-        .from("imagenes")
-        .getPublicUrl(fileName);
+      const { data } = await supabase.storage.from('imagenes').getPublicUrl(fileName);
 
-      if (!urlData || !urlData.publicUrl) {
-        console.log("Error obteniendo URL pública: respuesta vacía", urlData);
-        setMessage("Error obteniendo URL pública.");
+      if (!data || !data.publicUrl) {
+        console.log('Error obteniendo URL pública:', data);
+        setMessage('Error obteniendo URL pública.');
         return;
       }
 
-      const publicUrl = urlData.publicUrl;
+      const publicUrl = data.publicUrl;
 
-      const { error: insertError } = await supabase.from("fotos").insert([
+      const { error: insertError } = await supabase.from('fotos').insert([
         {
           usuario_id: user.id,
           url: publicUrl,
@@ -98,16 +92,18 @@ export default function UploadImagePage() {
 
       if (insertError) {
         console.log(insertError);
-        setMessage("Error guardando datos: " + insertError.message);
+        setMessage('Error guardando datos: ' + insertError.message);
         return;
       }
 
-      setMessage("Imagen subida correctamente 🎉");
+      setMessage('Imagen subida correctamente 🎉');
       setFile(null);
-      setDescripcion("");
+      setDescripcion('');
+      // limpiar input file si existe
+      if (fileInputRef.current) fileInputRef.current.value = '';
     } catch (err: any) {
       console.error(err);
-      setMessage("Ocurrió un error durante la subida.");
+      setMessage('Ocurrió un error durante la subida.');
     }
   };
 
@@ -117,17 +113,30 @@ export default function UploadImagePage() {
 
       <div className="upload-form-wide">
         <div className="upload-columns-wide">
-          <div className="upload-file-area">
-            {/* Input que abre galería o explorador de archivos en móvil */}
-            <input
-              type="file"
-              accept="image/*"
-              capture="environment"
-              onClick={(e) => (e.currentTarget.value = "")}
-              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-              className="upload-input-file"
-            />
-          </div>
+          {/* Input oculto */}
+          <input
+            type="file"
+            accept="image/*"
+            ref={fileInputRef}
+            style={{ display: "none" }}
+            capture="environment"
+            onClick={() => {
+              // Permitir seleccionar la misma imagen otra vez
+              if (fileInputRef.current) fileInputRef.current.value = "";
+            }}
+            onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+          />
+
+          {/* Botón que abre el explorador/galería */}
+          <button
+            className="upload-select-button"
+            onClick={() => {
+              if (fileInputRef.current) fileInputRef.current.value = "";
+              fileInputRef.current?.click();
+            }}
+          >
+            Seleccionar Imagen
+          </button>
 
           <div className="upload-description-area">
             <input
@@ -149,16 +158,10 @@ export default function UploadImagePage() {
 
       {/* Navbar inferior estilo Pinterest */}
       <nav className="navbar-inferior">
-        <Link href="/home" className="nav-icon">
-          <img src="../hogar.png" alt="Inicio" />
-        </Link>
+        <Link href="/home" className="nav-icon"><img src="../hogar.png" alt="Inicio" /></Link>
         <Link href="/images" className="nav-cruz">+</Link>
-        <Link href="/crudFoto" className="nav-icon">
-          <img src="../busqueda.png" alt="Buscar" />
-        </Link>
-        <Link href="/perfil" className="nav-icon">
-          <img src="../usuario.png" alt="Perfil" />
-        </Link>
+        <Link href="/crudFoto" className="nav-icon"><img src="../busqueda.png" alt="Buscar" /></Link>
+        <Link href="/perfil" className="nav-icon"><img src="../usuario.png" alt="Perfil" /></Link>
       </nav>
     </div>
   );

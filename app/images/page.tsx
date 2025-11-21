@@ -1,25 +1,24 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
+import "./Estilos.css";
 
 export default function UploadImagePage() {
   const [file, setFile] = useState<File | null>(null);
   const [descripcion, setDescripcion] = useState("");
   const [message, setMessage] = useState("");
 
-  // ⬇️ SOLUCIÓN RÁPIDA: insertar usuario en la tabla si no existe
   const ensureUserExists = async (userId: string, email: string) => {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from("usuarios")
       .select("id")
       .eq("id", userId)
       .maybeSingle();
 
-    // si ya existe, no hacemos nada
     if (data) return true;
 
-    // si no existe → lo insertamos
     const { error: insertErr } = await supabase.from("usuarios").insert([
       {
         id: userId,
@@ -52,18 +51,16 @@ export default function UploadImagePage() {
       return;
     }
 
-    // ⚡ SOLUCIÓN: aseguramos que el usuario EXISTA en la tabla usuarios
     const ok = await ensureUserExists(user.id, user.email ?? "");
     if (!ok) {
       setMessage("No se pudo registrar al usuario en BD.");
       return;
     }
 
-    // ⬇️ Subir imagen al bucket
     const fileExt = file.name.split(".").pop();
     const fileName = `${user.id}_${Date.now()}.${fileExt}`;
 
-    const { data: uploadData, error: uploadError } = await supabase.storage
+    const { error: uploadError } = await supabase.storage
       .from("imagenes")
       .upload(fileName, file);
 
@@ -73,14 +70,12 @@ export default function UploadImagePage() {
       return;
     }
 
-    // ⬇️ Obtener URL pública
     const { data: urlData } = await supabase.storage
       .from("imagenes")
       .getPublicUrl(fileName);
 
     const publicUrl = urlData.publicUrl;
 
-    // ⬇️ Guardar registro en la tabla fotos
     const { error: insertError } = await supabase.from("fotos").insert([
       {
         usuario_id: user.id,
@@ -101,34 +96,49 @@ export default function UploadImagePage() {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-4 border rounded shadow">
-      <h1 className="text-xl font-bold mb-4 text-center">
-        Subir Imagen
-      </h1>
+    <div className="upload-container">
+      <h1 className="upload-title">Subir Imagen</h1>
 
-      <input
-        type="file"
-        accept="image/*"
-        onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-        className="border p-2 w-full mb-3 rounded"
-      />
+      <div className="upload-form-wide">
+        <div className="upload-columns-wide">
+          {/* Subir imagen a la izquierda */}
+          <div className="upload-file-area">
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+              className="upload-input-file"
+            />
+          </div>
 
-      <input
-        type="text"
-        placeholder="Descripción (opcional)"
-        value={descripcion}
-        onChange={(e) => setDescripcion(e.target.value)}
-        className="border p-2 w-full mb-3 rounded"
-      />
+          {/* Descripción a la derecha */}
+          <div className="upload-description-area">
+            <input
+              type="text"
+              placeholder="Descripción (opcional)"
+              value={descripcion}
+              onChange={(e) => setDescripcion(e.target.value)}
+              className="upload-input-text"
+            />
+          </div>
+        </div>
 
-      <button
-        onClick={handleUpload}
-        className="bg-blue-600 text-white p-2 w-full rounded"
-      >
-        Subir Imagen
-      </button>
+        <button onClick={handleUpload} className="upload-button">
+          Subir Imagen
+        </button>
 
-      {message && <p className="mt-4 text-center">{message}</p>}
+        {message && <p className="upload-message">{message}</p>}
+      </div>
+      {/* Navbar inferior estilo Pinterest */}
+      <nav className="navbar-inferior">
+        <Link href="/home" className="nav-icon"><img src="../hogar.png" alt="" /></Link>
+
+        <Link href="/images" className="nav-cruz">+</Link>
+
+        <Link href="/search" className="nav-icon"><img src="../busqueda.png" alt="" /></Link>
+
+        <Link href="/profile" className="nav-icon"><img src="../usuario.png" alt="" /></Link>
+      </nav>
     </div>
   );
 }

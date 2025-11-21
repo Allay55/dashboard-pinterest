@@ -1,0 +1,68 @@
+/* Fondo general estilo Pinterest */
+body {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  background-color: #ffffff;
+  margin: 0;
+  padding: 0;
+}
+
+/* Contenedor principal del login */
+.login-container {
+  max-width: 400px;
+  margin: 80px auto;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  color: #000;
+  background-color: #fff;
+  text-align: center;
+}
+
+/* Título estilo Pinterest */
+.login-title {
+  font-size: 28px;
+  font-weight: bold;
+  color: #e60023; /* rojo Pinterest */
+  margin-bottom: 20px;
+}
+
+/* Inputs */
+.login-input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.login-input:focus {
+  border-color: #e60023;
+}
+
+/* Botón */
+.login-button {
+  width: 100%;
+  padding: 12px;
+  background-color: #e60023;
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: background-color 0.2s ease;
+}
+
+.login-button:hover {
+  background-color: #c2001b;
+}
+
+/* Mensajes */
+.login-message {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #333;
+}

@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
+import "./Estilos.css";
 
 export default function HomePage() {
   const [photos, setPhotos] = useState<any[]>([]);
@@ -34,25 +36,44 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-red-600 p-6 text-white">
-      <h1 className="text-3xl font-bold text-center mb-6">Mis Fotos (Pinterest Style)</h1>
+    <div className="home-container">
+      {/* Menú de categorías */}
+      <div className="categorias-menu">
+        <button className="categoria-btn">Fondos</button>
+        <button className="categoria-btn">Para ti</button>
+        <button className="categoria-btn">Imágenes</button>
+        <button className="categoria-btn">Favoritos</button>
+      </div>
 
+      {/* Galería estilo Pinterest */}
       {loading ? (
-        <p className="text-center text-lg">Cargando imágenes...</p>
+        <div className="mensaje-wrapper">
+          <p className="mensaje-carga">Cargando imágenes...</p>
+        </div>
       ) : photos.length === 0 ? (
-        <p className="text-center text-lg">Aún no has subido fotos.</p>
+        <div className="mensaje-wrapper">
+          <p className="mensaje-carga">Aún no has subido fotos.</p>
+        </div>
       ) : (
-        <div className="columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
+        <div className="pinterest-grid">
           {photos.map((foto) => (
-            <div
-              key={foto.id}
-              className="break-inside-avoid rounded-xl overflow-hidden shadow-xl"
-            >
-              <img src={foto.url} className="w-full" />
+            <div key={foto.id} className="grid-item">
+              <img src={foto.url} alt="foto subida" className="imagen-item" />
             </div>
           ))}
         </div>
       )}
+
+      {/* Navbar inferior estilo Pinterest */}
+      <nav className="navbar-inferior">
+        <Link href="/home" className="nav-icon"><img src="../hogar.png" alt="" /></Link>
+
+        <Link href="/images" className="nav-cruz">+</Link>
+
+        <Link href="/search" className="nav-icon"><img src="../busqueda.png" alt="" /></Link>
+
+        <Link href="/profile" className="nav-icon"><img src="../usuario.png" alt="" /></Link>
+      </nav>
     </div>
   );
 }

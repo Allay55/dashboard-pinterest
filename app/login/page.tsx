@@ -1,17 +1,19 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";   // 👈 Importa el router
 import { supabase } from "@/lib/supabaseClient";
+import "./Estilos.css"; 
 
 export default function LoginPage() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [message, setMessage] = useState<string | null>(null);
+  const router = useRouter();   // 👈 Inicializa el router
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // 1️⃣ Login con Supabase Auth
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -28,7 +30,6 @@ export default function LoginPage() {
       return;
     }
 
-    // 2️⃣ Registrar acción de login
     await supabase.from("acciones_usuarios").insert([
       {
         usuario_id: user.id,
@@ -38,20 +39,23 @@ export default function LoginPage() {
     ]);
 
     setMessage("✅ Login exitoso");
+
+    // 👇 Redirige al home
+    router.push("/home");
   };
 
   return (
-    <div className="max-w-sm mx-auto mt-10 p-6 border rounded-lg shadow">
-      <h1 className="text-xl font-bold mb-4 text-center">Inicio de sesión</h1>
+    <div className="login-container">
+      <h1 className="login-title">Inicio de sesión</h1>
 
-      <form onSubmit={handleLogin} className="flex flex-col gap-4">
+      <form onSubmit={handleLogin}>
         <input
           type="email"
           placeholder="Correo electrónico"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="border p-2 rounded"
+          className="login-input"
         />
 
         <input
@@ -60,13 +64,15 @@ export default function LoginPage() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          className="border p-2 rounded"
+          className="login-input"
         />
 
-        <button className="bg-blue-600 text-white p-2 rounded">Entrar</button>
+        <button type="submit" className="login-button">
+          Entrar
+        </button>
       </form>
 
-      {message && <p className="mt-4 text-center">{message}</p>}
+      {message && <p className="login-message">{message}</p>}
     </div>
   );
 }

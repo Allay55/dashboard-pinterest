@@ -2,19 +2,17 @@
 
 import { useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
+import "./Estilos.css"; // Importación del CSS
 
 export default function RegisterPage() {
-  // Estados tipados (igual que tu ejemplo)
   const [nombre, setNombre] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [message, setMessage] = useState<string | null>(null);
 
-  // Función de registro
   const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // 1️⃣ Registrar usuario en Supabase Auth
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
       password,
@@ -31,7 +29,6 @@ export default function RegisterPage() {
       return;
     }
 
-    // 2️⃣ Insertar en tabla usuarios (tu tabla personalizada)
     const { error: insertError } = await supabase.from("usuarios").insert([
       {
         id: userId,
@@ -49,7 +46,6 @@ export default function RegisterPage() {
       return;
     }
 
-    // 3️⃣ Registrar acción
     await supabase.from("acciones_usuarios").insert([
       {
         usuario_id: userId,
@@ -62,48 +58,43 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="max-w-sm mx-auto mt-10 p-6 border rounded-lg shadow">
-      <h1 className="text-xl font-bold mb-4 text-center">
-        Crear nueva cuenta
-      </h1>
+    <div className="register-container">
+      <h1 className="register-title">Crear nueva cuenta</h1>
 
-      <form onSubmit={handleRegister} className="flex flex-col gap-4">
-        {/* Nombre */}
+      <form onSubmit={handleRegister}>
         <input
           type="text"
           placeholder="Nombre completo"
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
           required
-          className="border p-2 rounded"
+          className="register-input"
         />
 
-        {/* Email */}
         <input
           type="email"
           placeholder="Correo electrónico"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="border p-2 rounded"
+          className="register-input"
         />
 
-        {/* Password */}
         <input
           type="password"
           placeholder="Contraseña"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          className="border p-2 rounded"
+          className="register-input"
         />
 
-        <button className="bg-blue-600 text-white p-2 rounded">
+        <button type="submit" className="register-button">
           Registrarse
         </button>
       </form>
 
-      {message && <p className="mt-4 text-center">{message}</p>}
+      {message && <p className="register-message">{message}</p>}
     </div>
   );
 }

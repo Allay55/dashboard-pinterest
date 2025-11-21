@@ -122,6 +122,8 @@ export default function UploadImagePage() {
             <input
               type="file"
               accept="image/*"
+              capture="environment"
+              onClick={(e) => (e.currentTarget.value = "")}
               onChange={(e) => setFile(e.target.files?.[0] ?? null)}
               className="upload-input-file"
             />

@@ -10,6 +10,7 @@ export default function UploadImagePage() {
   const [descripcion, setDescripcion] = useState("");
   const [message, setMessage] = useState("");
 
+  // Verifica que el usuario exista en la tabla "usuarios"
   const ensureUserExists = async (userId: string, email: string) => {
     const { data } = await supabase
       .from("usuarios")
@@ -35,6 +36,7 @@ export default function UploadImagePage() {
     return true;
   };
 
+  // Maneja la subida de la imagen
   const handleUpload = async () => {
     if (!file) {
       setMessage("Selecciona una imagen primero.");
@@ -57,42 +59,56 @@ export default function UploadImagePage() {
       return;
     }
 
-    const fileExt = file.name.split(".").pop();
+    const fileExt = file.name.split(".").pop() ?? "png";
     const fileName = `${user.id}_${Date.now()}.${fileExt}`;
 
-    const { error: uploadError } = await supabase.storage
-      .from("imagenes")
-      .upload(fileName, file, { upsert: true });
+    try {
+      // Asegurar content-type correcto (opcional, supabase suele detectarlo)
+      const contentType = file.type || `image/${fileExt}`;
 
-    if (uploadError) {
-      console.log(uploadError);
-      setMessage("Error al subir imagen: " + uploadError.message);
-      return;
+      const { error: uploadError } = await supabase.storage
+        .from("imagenes")
+        .upload(fileName, file, { upsert: true, contentType });
+
+      if (uploadError) {
+        console.log(uploadError);
+        setMessage("Error al subir imagen: " + uploadError.message);
+        return;
+      }
+
+      const { data: urlData } = await supabase.storage
+        .from("imagenes")
+        .getPublicUrl(fileName);
+
+      if (!urlData || !urlData.publicUrl) {
+        console.log("Error obteniendo URL pública: respuesta vacía", urlData);
+        setMessage("Error obteniendo URL pública.");
+        return;
+      }
+
+      const publicUrl = urlData.publicUrl;
+
+      const { error: insertError } = await supabase.from("fotos").insert([
+        {
+          usuario_id: user.id,
+          url: publicUrl,
+          descripcion,
+        },
+      ]);
+
+      if (insertError) {
+        console.log(insertError);
+        setMessage("Error guardando datos: " + insertError.message);
+        return;
+      }
+
+      setMessage("Imagen subida correctamente 🎉");
+      setFile(null);
+      setDescripcion("");
+    } catch (err: any) {
+      console.error(err);
+      setMessage("Ocurrió un error durante la subida.");
     }
-
-    const { data: urlData } = await supabase.storage
-      .from("imagenes")
-      .getPublicUrl(fileName);
-
-    const publicUrl = urlData.publicUrl;
-
-    const { error: insertError } = await supabase.from("fotos").insert([
-      {
-        usuario_id: user.id,
-        url: publicUrl,
-        descripcion,
-      },
-    ]);
-
-    if (insertError) {
-      console.log(insertError);
-      setMessage("Error guardando datos: " + insertError.message);
-      return;
-    }
-
-    setMessage("Imagen subida correctamente 🎉");
-    setFile(null);
-    setDescripcion("");
   };
 
   return (
@@ -102,12 +118,13 @@ export default function UploadImagePage() {
       <div className="upload-form-wide">
         <div className="upload-columns-wide">
           <div className="upload-file-area">
+            {/* Input que abre galería o explorador de archivos en móvil */}
             <input
-  type="file"
-  accept="image/*"
-  onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-  className="upload-input-file"
-/>
+              type="file"
+              accept="image/*"
+              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+              className="upload-input-file"
+            />
           </div>
 
           <div className="upload-description-area">
@@ -130,10 +147,16 @@ export default function UploadImagePage() {
 
       {/* Navbar inferior estilo Pinterest */}
       <nav className="navbar-inferior">
-        <Link href="/home" className="nav-icon"><img src="../hogar.png" alt="Inicio" /></Link>
+        <Link href="/home" className="nav-icon">
+          <img src="../hogar.png" alt="Inicio" />
+        </Link>
         <Link href="/images" className="nav-cruz">+</Link>
-        <Link href="/crudFoto" className="nav-icon"><img src="../busqueda.png" alt="Buscar" /></Link>
-        <Link href="/perfil" className="nav-icon"><img src="../usuario.png" alt="Perfil" /></Link>
+        <Link href="/crudFoto" className="nav-icon">
+          <img src="../busqueda.png" alt="Buscar" />
+        </Link>
+        <Link href="/perfil" className="nav-icon">
+          <img src="../usuario.png" alt="Perfil" />
+        </Link>
       </nav>
     </div>
   );
